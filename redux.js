@@ -1,18 +1,27 @@
-const { configureStore, createAction, createReducer } = window.RTK;
+const { configureStore, createAction, createReducer, createSlice } = window.RTK;
 
-const module = 'example';
-
-const increment = createAction(`${module}/INCREMENT`);
-const decrement = createAction(`${module}/DECREMENT`);
-
+const module = 'counter';
 const initialState = 0;
 
-const counter = createReducer(initialState, {
-  [increment]: (state) => state + 1,
-  [decrement]: (state) => state - 1,
+/**
+ * createSlice
+ * - generates actionCreators based on reducers keys
+ * - generates reducer case for each supplied reduce function
+ */
+const counterSlice = createSlice({
+  name: module,
+  initialState,
+  reducers: {
+    increment: state => state + 1,
+    decrement: state => state - 1
+  }
 });
 
-const store = configureStore({ reducer: counter });
+// actionCreator type property, or toString method returns the action name
+const { increment, decrement } = counterSlice.actions;
+
+const store = configureStore({ reducer: counterSlice.reducer });
+
 const valueEl = document.getElementById('value');
 
 function render() {
