@@ -1,26 +1,26 @@
-const INCREMENT = 'INCREMENT';
-const DECREMENT = 'DECREMENT';
+const { configureStore, createAction, createReducer } = window.RTK;
 
-function increment() {
-  return { type: INCREMENT };
+const module = 'example';
+
+const increment = createAction(`${module}/INCREMENT`);
+const decrement = createAction(`${module}/DECREMENT`);
+
+const initialState = 0;
+
+const counter = createReducer(initialState, {
+  [increment]: (state) => state + 1,
+  [decrement]: (state) => state - 1,
+});
+
+const store = configureStore({ reducer: counter });
+const valueEl = document.getElementById('value');
+
+function render() {
+  valueEl.innerHTML = store.getState().toString();
 }
 
-function decrement() {
-  return { type: DECREMENT };
-}
-
-function counter(state = 0, action) {
-  switch (action.type) {
-    case INCREMENT:
-      return state + 1;
-    case DECREMENT:
-      return state - 1;
-    default:
-      return state;
-  }
-}
-
-const store = Redux.createStore(counter);
+render();
+store.subscribe(render);
 
 document.getElementById('increment').addEventListener('click', function () {
   store.dispatch(increment());
@@ -45,12 +45,3 @@ document
       store.dispatch(increment());
     }, 1000);
   });
-
-var valueEl = document.getElementById('value');
-
-function render() {
-  valueEl.innerHTML = store.getState().toString();
-}
-
-render();
-store.subscribe(render);
